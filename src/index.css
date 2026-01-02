@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* ===== DARK MODE (Auth Page Colors) ===== */
+:root,
+[data-theme='dark'] {
+  --bg-main: #1f1219;
+  --bg-surface: #2f1a25;
+  --bg-accent: #27161f;
+  --text-main: #f2e8ed;
+  --text-secondary: #e0d5e0;
+  --border-main: #f2e8ed;
+  --accent-primary: #f2e8ed;
+  --accent-secondary: #e0d5e0;
+}
+
+/* ===== LIGHT MODE ===== */
+[data-theme='light'] {
+  --bg-main: #faf9fa;
+  --bg-surface: #f5f0f3;
+  --bg-accent: #ede6eb;
+  --text-main: #2f1a25;
+  --text-secondary: #5a4559;
+  --border-main: #d4c5d0;
+  --accent-primary: #8b5a8f;
+  --accent-secondary: #b891b5;
+}
