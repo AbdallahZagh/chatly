@@ -26,11 +26,10 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
-        {/* <Route path="/login" element={!user ? <Login /> : <Navigate to="/chats" />} /> */}
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/chats" />} />
           <Route path="/chats" element={<Chats />} />
         {/* <Route path="/chats" element={user ? <Chats /> : <Navigate to="/login" />} /> */}
-        {/* <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/chats" />} /> */}
-
+        
         {/* Private App Routes (Wrapped in MainLayout) */}
         {/* <Route element={<MainLayout />}>
           <Route path="/chats" element={<Chats />} />

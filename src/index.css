@@ -15,8 +15,8 @@
 
 /* ===== LIGHT MODE ===== */
 [data-theme='light'] {
-  --bg-main: #faf9fa;
-  --bg-surface: #f5f0f3;
+  --bg-main: #ebe9eb;
+  --bg-surface: #d7d7d7;
   --bg-accent: #ede6eb;
   --text-main: #2f1a25;
   --text-secondary: #5a4559;
