@@ -64,62 +64,6 @@ const Landing = () => {
       </nav>
 
       {/* ===== HERO SECTION ===== */}
-      {/* <motion.section
-        initial="hidden"
-        whileInView="visible"
-        variants={sectionVariants}
-        viewport={{ once: true, amount: 0.3 }}
-        className="min-h-screen flex items-center justify-center pt-20 px-6"
-      >
-        <div className="max-w-6xl mx-auto w-full">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <motion.h1
-              variants={sectionVariants}
-              className="text-7xl font-bold mb-6 bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] bg-clip-text text-transparent"
-            >
-              Welcome to Chatly
-            </motion.h1>
-
-            <motion.p
-              variants={sectionVariants}
-              className="text-2xl font-light text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto"
-            >
-              Experience fast, beautiful, and seamless real-time messaging designed
-              for modern conversations.
-            </motion.p>
-
-            <motion.div
-              variants={sectionVariants}
-              className="flex gap-4 justify-center flex-wrap"
-            >
-              <Link to="/login">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 rounded-lg bg-[var(--accent-primary)] text-[var(--bg-main)] font-bold text-lg hover:shadow-lg transition"
-                >
-                  Get Started Now
-                </motion.button>
-              </Link>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 rounded-lg border-2 border-[var(--accent-primary)] text-[var(--accent-primary)] font-bold text-lg hover:bg-[var(--bg-surface)] transition"
-              >
-                Watch Demo
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </motion.section> */}
-
       <motion.section
   initial="hidden"
   whileInView="visible"

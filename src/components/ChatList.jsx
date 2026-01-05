@@ -1,12 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useChatStore } from '../store/useChatStore';
 import { mockContacts } from '../lib/mockData';
+import { Moon, Search, Sun, User } from 'lucide-react';
+import { useTheme } from '../hooks/useTheme';
+import { Link } from 'react-router-dom';
 
 const ChatList = () => {
   const { chats, activeChat, setActiveChat, searchQuery, setSearchQuery, showContacts, setShowContacts } =
     useChatStore();
+    const { theme, toggleTheme } = useTheme();
+      const [mounted, setMounted] = useState(false);
   const [searchInput, setSearchInput] = useState('');
+
+  useEffect(() => {
+      setMounted(true);
+    }, []);
 
   const handleSearch = (e) => {
     setSearchInput(e.target.value);
@@ -34,10 +43,36 @@ const ChatList = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[var(--bg-surface)] border-r border-[var(--border-main)]">
+    <div className="h-full flex flex-col bg-[var(--bg-main)] border-r border-[var(--accent-primary)]">
       {/* Header */}
-      <div className="p-4 border-b border-[var(--border-main)]">
+      <div className="p-4 space-y-2 border-b border-[var(--border-main)]">
+        <div className='flex justify-between'>
         <h1 className="text-2xl font-bold text-[var(--text-main)] mb-4">Chatly</h1>
+        <div className='flex gap-2'>
+        {/* Theme Toggle */}
+            {mounted && (
+              <motion.button
+              whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleTheme}
+                className="w-10 h-10 flex justify-center items-center rounded-full bg-[var(--bg-main)] text-[var(--text-main)] hover:bg-[var(--accent-primary)] hover:text-[var(--bg-main)] border border-[var(--accent-primary)] transition"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun size={20}/> : <Moon size={20}/>}
+              </motion.button>
+            )}
+
+        <Link to="/profile">
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 flex justify-center items-center rounded-full bg-[var(--bg-main)] text-[var(--text-main)] hover:bg-[var(--accent-primary)] hover:text-[var(--bg-main)] border border-[var(--accent-primary)] transition"
+              >
+                <User/>
+              </motion.button>
+            </Link>
+        </div>
+                </div>
 
         {/* Search Input */}
         <div className="relative">
@@ -46,9 +81,10 @@ const ChatList = () => {
             placeholder="Search chats..."
             value={searchInput}
             onChange={handleSearch}
-            className="w-full px-4 py-2.5 rounded-2xl bg-[var(--bg-accent)] text-[var(--text-main)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]"
+            className="w-full px-4 py-2.5 rounded-2xl bg-[var(--bg-surface)] text-[var(--text-main)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring focus:ring-[var(--accent-primary)]"
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">🔍</span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">
+          <Search/></span>
         </div>
       </div>
 
@@ -94,7 +130,7 @@ const ChatList = () => {
               variants={itemVariants}
               onClick={() => !showContacts && setActiveChat(item)}
               disabled={showContacts}
-              className={`w-full p-3 flex items-center gap-3 hover:bg-[var(--bg-accent)] transition border-b border-[var(--border-main)]/50 ${
+              className={`w-full p-3 flex items-center gap-3 hover:bg-[var(--bg-surface)] transition border-b border-[var(--border-main)]/50 ${
                 activeChat?.id === item.id && !showContacts ? 'bg-[var(--bg-accent)]' : ''
               } ${showContacts ? 'cursor-default' : 'cursor-pointer'} disabled:hover:bg-transparent`}
             >

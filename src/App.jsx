@@ -9,6 +9,9 @@ import { useAppStore } from './store/useAppStore';
 import Landing from './pages/Landing';
 import Login from './pages/Auth';
 import Chats from './pages/Chats';
+import ProfilePage from './pages/Profile';
+import ResetPassword from './pages/ResetPassword';
+import ForgotPassword from './pages/ForgotPassword';
 // import Signup from './pages/Signup';
 // import ChatDetail from './pages/ChatDetail';
 // import Contacts from './pages/Contacts';
@@ -28,6 +31,9 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/chats" />} />
           <Route path="/chats" element={<Chats />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         {/* <Route path="/chats" element={user ? <Chats /> : <Navigate to="/login" />} /> */}
         
         {/* Private App Routes (Wrapped in MainLayout) */}
