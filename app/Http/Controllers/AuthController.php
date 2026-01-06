@@ -161,7 +161,11 @@ class AuthController extends Controller
             return response()->json([
                 'error' => 'Registration Failed',
                 'message' => 'An error occurred while registering the user. Please try again later.',
-                'debug_message' => config('app.debug') ? $e->getMessage() : null
+                'debug_message' => config('app.debug') ? $e->getMessage() : null,
+                'exception_type' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : null
             ], 500);
         }
     }
