@@ -37,6 +37,11 @@ COPY . /var/www/html
 # Install dependencies (production optimized)
 RUN composer update --no-dev --optimize-autoloader
 
+# Run optimizations and generate Swagger docs
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan l5-swagger:generate
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 

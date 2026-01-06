@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (!defined('L5_SWAGGER_CONST_HOST')) {
+            define('L5_SWAGGER_CONST_HOST', env('L5_SWAGGER_CONST_HOST', request()->root() . '/api'));
+        }
     }
 }
