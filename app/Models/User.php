@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'email',
         'password',
+        'last_seen_at',
     ];
 
     /**
@@ -47,7 +48,18 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Virtual Attribute: is_online
+     */
+    protected $appends = ['is_online'];
+
+    public function getIsOnlineAttribute()
+    {
+        return $this->last_seen_at && $this->last_seen_at->diffInMinutes(now()) < 5;
     }
 
     /**
@@ -68,5 +80,15 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class)->withTimestamps();
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
     }
 }

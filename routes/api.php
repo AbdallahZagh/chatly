@@ -17,3 +17,12 @@ Route::group([
     Route::get('profile', [AuthController::class, 'profile']);
     Route::put('profile', [AuthController::class, 'updateProfile']);
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('/chats', [\App\Http\Controllers\ChatController::class, 'index']);
+    Route::post('/chats', [\App\Http\Controllers\ChatController::class, 'store']);
+    Route::get('/chats/{id}/messages', [\App\Http\Controllers\ChatController::class, 'show']);
+    Route::post('/chats/{id}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage']);
+    // Search Route
+    Route::get('/search', [\App\Http\Controllers\ChatController::class, 'search']);
+});
