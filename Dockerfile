@@ -1,4 +1,4 @@
-FROM php:8.4-apache
+FROM php:8.2-apache
 
 # Install dependencies for Laravel and Postgres
 RUN apt-get update && apt-get install -y \
