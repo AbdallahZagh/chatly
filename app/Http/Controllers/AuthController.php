@@ -24,6 +24,31 @@ class AuthController extends Controller
     /**
      * Get a JWT via given credentials.
      *
+     * @OA\Post(
+     *     path="/api/auth/login",
+     *     tags={"Auth"},
+     *     summary="Login",
+     *     operationId="login",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string", example="bearer"),
+     *             @OA\Property(property="expires_in", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
@@ -54,6 +79,33 @@ class AuthController extends Controller
 
     /**
      * Register a User.
+     *
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     tags={"Auth"},
+     *     summary="Register a new user",
+     *     operationId="register",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","username","display_name","password","password_confirmation"},
+     *             @OA\Property(property="email", type="string", format="email", example="newuser@example.com"),
+     *             @OA\Property(property="username", type="string", example="newuser"),
+     *             @OA\Property(property="display_name", type="string", example="New User"),
+     *             @OA\Property(property="password", type="string", format="password", example="Password123!"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="Password123!")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User created successfully"),
+     *             @OA\Property(property="user", type="object"),
+     *             @OA\Property(property="authorization", type="object")
+     *         )
+     *     )
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -117,6 +169,23 @@ class AuthController extends Controller
     /**
      * Get the authenticated User.
      *
+     * @OA\Get(
+     *     path="/api/auth/profile",
+     *     tags={"Auth"},
+     *     summary="Get User Profile",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="User Profile",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="username", type="string"),
+     *             @OA\Property(property="display_name", type="string"),
+     *             @OA\Property(property="email", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function profile()
@@ -142,6 +211,21 @@ class AuthController extends Controller
 
     /**
      * Update the authenticated User.
+     *
+     * @OA\Put(
+     *     path="/api/auth/profile",
+     *     tags={"Auth"},
+     *     summary="Update User Profile",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="username", type="string"),
+     *             @OA\Property(property="display_name", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Profile updated successfully")
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -188,6 +272,14 @@ class AuthController extends Controller
 
     /**
      * Log the user out (Invalidate the token).
+     *
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     tags={"Auth"},
+     *     summary="Logout",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(response=200, description="Successfully logged out")
+     * )
      *
      * @return \Illuminate\Http\JsonResponse
      */

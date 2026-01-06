@@ -38,7 +38,8 @@ COPY . /var/www/html
 RUN composer update --no-dev --optimize-autoloader
 
 # Generate Swagger docs (do not cache config here as env vars are missing at build time)
-RUN php artisan l5-swagger:generate
+RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider" --force && \
+    php artisan l5-swagger:generate
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
