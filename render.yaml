@@ -1,0 +1,36 @@
+databases:
+  - name: chatly_db
+    databaseName: chatly
+    user: chatly
+    plan: free # Note: Free Postgres on Render expires after 90 days if not upgraded.
+    ipAllowList: [] # Allow all IPs for external access if needed, or restrict.
+
+services:
+  - type: web
+    name: chatly-backend
+    env: php
+    region: ohio # or frankfurt, oregon, etc.
+    plan: free
+    buildCommand: composer install --no-dev --optimize-autoloader && php artisan migrate --force
+    startCommand: heroku-php-apache2 public/
+    envVars:
+      - key: APP_NAME
+        value: Chatly
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        sync: false # User must set this after deploy
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chatly_db
+          property: connectionString
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: LOG_CHANNEL
+        value: stderr
