@@ -18,11 +18,11 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: true
       - key: APP_URL
         sync: false # User must set this after deploy
       - key: APP_KEY
-        sync: false
+        value: base64:fnqSyEBRPGtbiOMjAcdTzuEjSR4MWu8QgActZjdra6o=
       - key: L5_SWAGGER_CONST_HOST
         sync: false # Set this to your URL + /api (e.g. https://.../api)
       - key: DB_CONNECTION
