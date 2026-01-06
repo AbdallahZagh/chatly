@@ -9,7 +9,6 @@ services:
   - type: web
     name: chatly-backend
     env: docker
-    env: docker
     region: oregon
     plan: free
     # Docker runtime uses the Dockerfile for build and start commands
