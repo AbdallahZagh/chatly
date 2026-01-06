@@ -7,7 +7,7 @@ databases:
 
 services:
   - type: web
-    name: chatly-backend
+    name: chatly-server
     env: docker
     region: oregon
     plan: free
