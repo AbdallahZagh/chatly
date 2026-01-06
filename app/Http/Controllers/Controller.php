@@ -20,6 +20,14 @@ namespace App\Http\Controllers;
  *      url=L5_SWAGGER_CONST_HOST,
  *      description="Demo API Server"
  * )
+ *
+ * @OA\Get(
+ *     path="/api/health",
+ *     tags={"Health"},
+ *     summary="Health Check",
+ *     description="Basic health check endpoint to verify API is running",
+ *     @OA\Response(response="200", description="API is active")
+ * )
  */
 abstract class Controller
 {
