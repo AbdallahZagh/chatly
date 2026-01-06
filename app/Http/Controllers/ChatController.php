@@ -132,6 +132,10 @@ class ChatController extends Controller
             }
 
             return response()->json(['id' => $conversation->id]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Not Found', 'message' => 'User not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to start conversation',
@@ -182,6 +186,8 @@ class ChatController extends Controller
                 ->paginate(20);
 
             return response()->json($messages);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Not Found', 'message' => 'Conversation not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch messages',
@@ -250,6 +256,10 @@ class ChatController extends Controller
             broadcast(new MessageSent($message))->toOthers();
 
             return response()->json($message);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Not Found', 'message' => 'Conversation not found'], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to send message',
@@ -317,6 +327,8 @@ class ChatController extends Controller
             });
 
             return response()->json($formatted);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
              return response()->json([
                 'error' => 'Search failed',
