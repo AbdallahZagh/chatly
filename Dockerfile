@@ -38,12 +38,18 @@ COPY . /var/www/html
 # Install dependencies (production optimized)
 RUN composer update --no-dev --optimize-autoloader
 
-# Generate Swagger docs (do not cache config here as env vars are missing at build time)
-RUN php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider" --force && \
-    php artisan l5-swagger:generate
+# Copy startup script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Remove build-time generation (moved to start.sh)
+# RUN php artisan l5-swagger:generate
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80
 EXPOSE 80
+
+# Start command
+CMD ["/usr/local/bin/start.sh"]
