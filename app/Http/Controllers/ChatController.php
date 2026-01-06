@@ -242,7 +242,7 @@ class ChatController extends Controller
      *         name="query",
      *         in="query",
      *         required=true,
-     *         schema=@OA\Schema(type="string", minLength=3)
+     *         @OA\Schema(type="string", minLength=3)
      *     ),
      *     @OA\Response(
      *         response=200,
