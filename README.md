@@ -56,4 +56,21 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 ## License
 
+
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Deployment to Render
+
+This repository includes a `render.yaml` configuration for easy deployment on [Render](https://render.com).
+
+### Steps to Deploy
+1.  **Fork/Push** this repository to your GitHub account.
+2.  Login to [Render.com](https://dashboard.render.com/).
+3.  Go to the **Blueprints** tab and click **New Blueprint Instance**.
+4.  Connect your GitHub repository.
+5.  Render will automatically detect the `render.yaml` file and prompt you to apply the configuration.
+6.  Click **Apply** to create the Web Service (PHP) and Database (Postgres) automatically.
+
+### Post-Deployment
+The `APP_KEY` and database connection string are generated automatically. However, you should update the `APP_URL` environment variable in the Render Dashboard to match your new `onrender.com` URL after deployment.
+

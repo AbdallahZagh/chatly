@@ -8,11 +8,10 @@ databases:
 services:
   - type: web
     name: chatly-backend
-    env: php
+    env: docker
     region: ohio # or frankfurt, oregon, etc.
     plan: free
-    buildCommand: composer install --no-dev --optimize-autoloader && php artisan migrate --force
-    startCommand: heroku-php-apache2 public/
+    # Docker runtime uses the Dockerfile for build and start commands
     envVars:
       - key: APP_NAME
         value: Chatly
