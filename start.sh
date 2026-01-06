@@ -13,6 +13,10 @@ php artisan view:cache
 echo "Generating Swagger Docs..."
 php artisan l5-swagger:generate
 
+# Run Migrations (Force is needed for production)
+echo "Running Migrations..."
+php artisan migrate --force
+
 # Start Apache
 echo "Starting Apache..."
 exec apache2-foreground
