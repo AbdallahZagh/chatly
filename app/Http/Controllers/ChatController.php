@@ -29,7 +29,9 @@ class ChatController extends Controller
      *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="contact_name", type="string"),
      *             @OA\Property(property="last_message", type="string"),
-     *             @OA\Property(property="unread_count", type="integer")
+     *             @OA\Property(property="unread_count", type="integer"),
+     *             @OA\Property(property="is_online", type="boolean"),
+     *             @OA\Property(property="last_seen_text", type="string")
      *         ))
      *     )
      * )
@@ -163,7 +165,14 @@ class ChatController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="List of messages",
-     *         @OA\JsonContent(type="object") 
+     *         @OA\JsonContent(type="array", @OA\Items(
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="body", type="string"),
+     *             @OA\Property(property="type", type="string"),
+     *             @OA\Property(property="sender_id", type="integer"),
+     *             @OA\Property(property="is_mine", type="boolean"),
+     *             @OA\Property(property="created_at", type="string", format="date-time")
+     *         ))
      *     ),
      *     @OA\Response(response=403, description="Unauthorized")
      * )
@@ -298,7 +307,9 @@ class ChatController extends Controller
      *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="username", type="string"),
      *             @OA\Property(property="display_name", type="string"),
-     *             @OA\Property(property="avatar", type="string")
+     *             @OA\Property(property="avatar", type="string"),
+     *             @OA\Property(property="is_online", type="boolean"),
+     *             @OA\Property(property="last_seen_text", type="string")
      *         ))
      *     )
      * )

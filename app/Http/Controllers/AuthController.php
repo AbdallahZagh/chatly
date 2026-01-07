@@ -182,6 +182,7 @@ class AuthController extends Controller
      *         response=200,
      *         description="User Profile",
      *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="username", type="string"),
      *             @OA\Property(property="display_name", type="string"),
      *             @OA\Property(property="email", type="string")
