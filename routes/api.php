@@ -25,4 +25,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/chats/{id}/messages', [\App\Http\Controllers\ChatController::class, 'sendMessage']);
     // Search Route
     Route::get('/search', [\App\Http\Controllers\ChatController::class, 'search']);
+
+    // Message Management
+    Route::put('/messages/{id}', [\App\Http\Controllers\ChatController::class, 'updateMessage']);
+    Route::delete('/messages/{id}', [\App\Http\Controllers\ChatController::class, 'deleteMessage']);
 });

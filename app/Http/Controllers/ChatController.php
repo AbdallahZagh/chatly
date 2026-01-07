@@ -358,4 +358,102 @@ class ChatController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Delete a message.
+     *
+     * @OA\Delete(
+     *     path="/api/messages/{id}",
+     *     tags={"Chat"},
+     *     summary="Delete a message",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Message deleted"),
+     *     @OA\Response(response=403, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Message not found")
+     * )
+     */
+    public function deleteMessage($id)
+    {
+        try {
+            $user = Auth::user();
+            // Optimized query: Select only necessary fields for verification
+            $message = Message::select('id', 'sender_id')->where('id', $id)->firstOrFail();
+
+            if ($message->sender_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            // Perform delete
+            Message::where('id', $id)->delete(); 
+
+            // Broadcasting logic could be added here
+            // broadcast(new MessageDeleted($id))->toOthers();
+
+            return response()->json(['message' => 'Message deleted successfully']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Not Found', 'message' => 'Message not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete message'], 500);
+        }
+    }
+
+    /**
+     * Update a message.
+     *
+     * @OA\Put(
+     *     path="/api/messages/{id}",
+     *     tags={"Chat"},
+     *     summary="Update a message",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"body"},
+     *             @OA\Property(property="body", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Message updated"),
+     *     @OA\Response(response=403, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Message not found")
+     * )
+     */
+    public function updateMessage(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'body' => 'required|string|max:5000',
+            ]);
+
+            $user = Auth::user();
+            $message = Message::findOrFail($id);
+
+            if ($message->sender_id !== $user->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $message->body = $request->body;
+            $message->save();
+
+            // Broadcasting logic could be added here
+            // broadcast(new MessageUpdated($message))->toOthers();
+
+            return response()->json($message);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Not Found', 'message' => 'Message not found'], 404);
+        } catch (\Exception $e) {
+             return response()->json(['error' => 'Failed to update message'], 500);
+        }
+    }
 }
