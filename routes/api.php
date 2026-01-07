@@ -16,6 +16,10 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::get('profile', [AuthController::class, 'profile']);
     Route::put('profile', [AuthController::class, 'updateProfile']);
+    
+    // Account Management
+    Route::post('deactivate', [AuthController::class, 'deactivate']);
+    Route::post('reactivate', [AuthController::class, 'reactivate'])->withoutMiddleware('auth:api'); // Allow public access since user can't login
 });
 
 Route::group(['middleware' => 'auth:api'], function () {

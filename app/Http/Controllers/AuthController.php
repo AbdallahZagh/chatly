@@ -74,7 +74,119 @@ class AuthController extends Controller
             ], 401);
         }
 
+        /** @var \App\Models\User $user */
+        $user = $guard->user();
+
+        if ($user->isDeactivated()) {
+            $guard->logout();
+            return response()->json([
+                'error' => 'Account Deactivated',
+                'message' => 'Your account is deactivated. Please use the reactivate endpoint to restore it.'
+            ], 403);
+        }
+
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Deactivate the user account.
+     *
+     * @OA\Post(
+     *     path="/api/auth/deactivate",
+     *     tags={"Account Management"},
+     *     summary="Deactivate Account",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account deactivated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Account deactivated successfully.")
+     *         )
+     *     )
+     * )
+     */
+    public function deactivate()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if ($user) {
+            $user->deactivate();
+        }
+        Auth::logout();
+
+        return response()->json(['message' => 'Account deactivated successfully.']);
+    }
+
+    /**
+     * Reactivate the user account.
+     *
+     * @OA\Post(
+     *     path="/api/auth/reactivate",
+     *     tags={"Auth"},
+     *     summary="Reactivate Account",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account reactivated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Account reactivated successfully."),
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string", example="bearer"),
+     *             @OA\Property(property="expires_in", type="integer")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials"
+     *     )
+     * )
+     */
+    public function reactivate(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        // We use auth()->attempt() inside a guard context to verify credentials without logging in globally immediately if we want custom logic,
+        // but explicit attempt is easiest.
+        // However, standard attempt checks 'active' scope? No, standard Auth uses User provider.
+        // We just need to check credentials.
+        
+        /** @var \PHPOpenSourceSaver\JWTAuth\JWTGuard $guard */
+        $guard = auth()->guard('api');
+
+        if (! $token = $guard->attempt($credentials)) {
+             return response()->json([
+                'error' => 'Unauthorized',
+                'message' => 'Invalid credentials.'
+            ], 401);
+        }
+
+        // Token generated means credentials are good.
+        // Now check user and reactivate if needed.
+        /** @var \App\Models\User $user */
+        $user = $guard->user();
+
+        if ($user->isDeactivated()) {
+            $user->reactivate();
+        }
+
+        return response()->json([
+            'message' => 'Account reactivated successfully.',
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => $guard->factory()->getTTL() * 60
+        ]);
     }
 
     /**

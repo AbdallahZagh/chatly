@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'last_seen_at',
+        'deactivated_at',
     ];
 
     /**
@@ -49,6 +50,7 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'last_seen_at' => 'datetime',
+            'deactivated_at' => 'datetime',
         ];
     }
 
@@ -110,5 +112,33 @@ class User extends Authenticatable implements JWTSubject
     public function isBlocked(User $user)
     {
         return $this->blockedUsers()->where('blocked_user_id', $user->id)->exists();
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->whereNull('deactivated_at');
+    }
+
+    public function deactivate()
+    {
+        $this->deactivated_at = now();
+        $this->save();
+    }
+
+    public function reactivate()
+    {
+        $this->deactivated_at = null;
+        $this->save();
+    }
+
+    public function isDeactivated()
+    {
+        return !is_null($this->deactivated_at);
     }
 }
