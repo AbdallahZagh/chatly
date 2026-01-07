@@ -58,8 +58,9 @@ class ChatController extends Controller
                     'contact_avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($contact->display_name ?? 'User'),
                     'last_message' => $lastMsg ? $lastMsg->body : 'No messages yet',
                     'timestamp' => $lastMsg ? $lastMsg->created_at->format('h:i A') : $conversation->updated_at->format('h:i A'),
-                    'unread_count' => 0, // Placeholder for now, can implement read receipts later
+                    'unread_count' => 0, // Placeholder for now
                     'is_online' => $contact ? $contact->is_online : false,
+                    'last_seen_text' => $contact ? ($contact->is_online ? 'Online' : ($contact->last_seen_at ? $contact->last_seen_at->diffForHumans() : 'Offline')) : '',
                 ];
             });
 
@@ -330,6 +331,8 @@ class ChatController extends Controller
                     'display_name' => $user->display_name,
                     'email' => $user->email,
                     'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($user->display_name),
+                    'is_online' => $user->is_online,
+                    'last_seen_text' => $user->is_online ? 'Online' : ($user->last_seen_at ? $user->last_seen_at->diffForHumans() : 'Offline'),
                 ];
             });
 
