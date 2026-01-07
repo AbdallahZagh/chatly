@@ -366,16 +366,37 @@ class ChatController extends Controller
      *     path="/api/messages/{id}",
      *     tags={"Chat"},
      *     summary="Delete a message",
+     *     description="Deletes a message if the authenticated user is the sender.",
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
+     *         description="ID of the message to delete",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=1)
      *     ),
-     *     @OA\Response(response=200, description="Message deleted"),
-     *     @OA\Response(response=403, description="Unauthorized"),
-     *     @OA\Response(response=404, description="Message not found")
+     *     @OA\Response(
+     *         response=200, 
+     *         description="Message deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Message deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403, 
+     *         description="Unauthorized - User is not the sender",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404, 
+     *         description="Message not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Not Found"),
+     *             @OA\Property(property="message", type="string", example="Message not found")
+     *         )
+     *     )
      * )
      */
     public function deleteMessage($id)
@@ -399,7 +420,11 @@ class ChatController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Not Found', 'message' => 'Message not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete message'], 500);
+            return response()->json([
+                'error' => 'Failed to delete message',
+                'message' => $e->getMessage(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : null
+            ], 500);
         }
     }
 
@@ -410,23 +435,49 @@ class ChatController extends Controller
      *     path="/api/messages/{id}",
      *     tags={"Chat"},
      *     summary="Update a message",
+     *     description="Updates the content of a message if the authenticated user is the sender.",
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
+     *         description="ID of the message to update",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\RequestBody(
      *         required=true,
+     *         description="New content for the message",
      *         @OA\JsonContent(
      *             required={"body"},
-     *             @OA\Property(property="body", type="string")
+     *             @OA\Property(property="body", type="string", example="This is the updated message text.")
      *         )
      *     ),
-     *     @OA\Response(response=200, description="Message updated"),
-     *     @OA\Response(response=403, description="Unauthorized"),
-     *     @OA\Response(response=404, description="Message not found")
+     *     @OA\Response(
+     *         response=200, 
+     *         description="Message updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="body", type="string", example="This is the updated message text."),
+     *             @OA\Property(property="sender_id", type="integer", example=5),
+     *             @OA\Property(property="created_at", type="string", format="date-time"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403, 
+     *         description="Unauthorized - User is not the sender",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404, 
+     *         description="Message not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Not Found"),
+     *             @OA\Property(property="message", type="string", example="Message not found")
+     *         )
+     *     )
      * )
      */
     public function updateMessage(Request $request, $id)
@@ -453,7 +504,11 @@ class ChatController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Not Found', 'message' => 'Message not found'], 404);
         } catch (\Exception $e) {
-             return response()->json(['error' => 'Failed to update message'], 500);
+             return response()->json([
+                'error' => 'Failed to update message',
+                'message' => $e->getMessage(),
+                'trace' => config('app.debug') ? $e->getTraceAsString() : null
+            ], 500);
         }
     }
 }
