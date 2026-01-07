@@ -37,3 +37,15 @@ services:
         value: cookie
       - key: LOG_CHANNEL
         value: stderr
+      - key: REVERB_APP_ID
+        sync: false
+      - key: REVERB_APP_KEY
+        sync: false
+      - key: REVERB_APP_SECRET
+        sync: false
+      - key: REVERB_HOST
+        sync: false
+      - key: REVERB_SCHEME
+        value: https
+      - key: REVERB_PORT
+        value: 443

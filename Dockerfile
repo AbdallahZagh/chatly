@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install dependencies for Laravel and Postgres
+# Install dependencies for Laravel and Postgres + Supervisor
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    libpq-dev 
+    libpq-dev \
+    supervisor
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -17,8 +18,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install extensions
 RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite and Proxy modules for WebSockets
+RUN a2enmod rewrite proxy proxy_http proxy_wstunnel
 
 # Configure Apache DocumentRoot to /var/www/html/public
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
@@ -42,8 +43,11 @@ RUN composer update --no-dev --optimize-autoloader
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Remove build-time generation (moved to start.sh)
-# RUN php artisan l5-swagger:generate
+# Copy Supervisor Configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy Apache Reverb Proxy config
+COPY apache-reverb.conf /etc/apache2/sites-available/000-default.conf
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -51,5 +55,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port 80
 EXPOSE 80
 
-# Start command
+# Start command (runs start.sh which now triggers supervisord)
 CMD ["/usr/local/bin/start.sh"]

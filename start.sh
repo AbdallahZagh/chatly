@@ -17,6 +17,6 @@ php artisan l5-swagger:generate
 echo "Running Migrations..."
 php artisan migrate --force
 
-# Start Apache
-echo "Starting Apache..."
-exec apache2-foreground
+# Start Supervisor (which starts Apache & Reverb)
+echo "Starting Supervisor..."
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
