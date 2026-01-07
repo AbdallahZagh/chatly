@@ -185,7 +185,14 @@ class ChatController extends Controller
                 ->orderBy('created_at', 'desc') // Latest first for UI scrolling up
                 ->paginate(20);
 
-            return response()->json($messages);
+            $formattedMessages = $messages->through(function ($message) use ($user) {
+                // Ensure sender is loaded if not already (it is by 'with')
+                // Add is_mine flag
+                $message->is_mine = $message->sender_id === $user->id;
+                return $message;
+            });
+
+            return response()->json($formattedMessages);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Not Found', 'message' => 'Conversation not found'], 404);
         } catch (\Exception $e) {
