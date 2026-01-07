@@ -91,4 +91,24 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Message::class, 'sender_id');
     }
+
+    public function blockedUsers()
+    {
+        return $this->belongsToMany(User::class, 'blocked_users', 'user_id', 'blocked_user_id')->withTimestamps();
+    }
+
+    public function block(User $user)
+    {
+        $this->blockedUsers()->syncWithoutDetaching([$user->id]);
+    }
+
+    public function unblock(User $user)
+    {
+        $this->blockedUsers()->detach($user->id);
+    }
+
+    public function isBlocked(User $user)
+    {
+        return $this->blockedUsers()->where('blocked_user_id', $user->id)->exists();
+    }
 }
