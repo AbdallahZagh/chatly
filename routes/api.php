@@ -38,4 +38,9 @@ Route::group(['middleware' => ['auth:api', \App\Http\Middleware\UpdateUserActivi
     Route::put('/users/{id}/block', [\App\Http\Controllers\BlockUserController::class, 'store']);
     Route::put('/users/{id}/unblock', [\App\Http\Controllers\BlockUserController::class, 'destroy']);
     Route::get('/users/blocked', [\App\Http\Controllers\BlockUserController::class, 'index']);
+    // Video Call Signaling
+    Route::post('/calls/initiate', [\App\Http\Controllers\CallController::class, 'initiate']);
+    Route::post('/calls/{id}/accept', [\App\Http\Controllers\CallController::class, 'accept']);
+    Route::post('/calls/{id}/reject', [\App\Http\Controllers\CallController::class, 'reject']);
+    Route::post('/calls/{id}/ice-candidate', [\App\Http\Controllers\CallController::class, 'iceCandidate']);
 });
