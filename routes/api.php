@@ -43,4 +43,5 @@ Route::group(['middleware' => ['auth:api', \App\Http\Middleware\UpdateUserActivi
     Route::post('/calls/{id}/accept', [\App\Http\Controllers\CallController::class, 'accept']);
     Route::post('/calls/{id}/reject', [\App\Http\Controllers\CallController::class, 'reject']);
     Route::post('/calls/{id}/ice-candidate', [\App\Http\Controllers\CallController::class, 'iceCandidate']);
+    Route::get('/calls', [\App\Http\Controllers\CallController::class, 'index']);
 });
