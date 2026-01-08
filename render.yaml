@@ -37,15 +37,27 @@ services:
         value: cookie
       - key: LOG_CHANNEL
         value: stderr
+      - key: BROADCAST_CONNECTION
+        value: reverb
       - key: REVERB_APP_ID
-        sync: false
+        value: my-app-id
       - key: REVERB_APP_KEY
-        sync: false
+        value: my-app-key
       - key: REVERB_APP_SECRET
-        sync: false
+        value: my-app-secret
       - key: REVERB_HOST
-        sync: false
-      - key: REVERB_SCHEME
-        value: https
+        value: 0.0.0.0 # Must be 0.0.0.0 on Render to listen on all interfaces
       - key: REVERB_PORT
+        value: 8080 # Internal port handled by Supervisor
+      - key: REVERB_SCHEME
+        value: http # Internal scheme
+      
+      # Frontend/Public connection details (passed to View/Vite)
+      - key: VITE_REVERB_APP_KEY
+        value: my-app-key
+      - key: VITE_REVERB_HOST
+        sync: false # Set this in Dashboard to your domain: chatly-server.onrender.com
+      - key: VITE_REVERB_PORT
         value: 443
+      - key: VITE_REVERB_SCHEME
+        value: https
