@@ -164,17 +164,35 @@ class ChatController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="List of messages",
-     *         @OA\JsonContent(type="array", @OA\Items(
-     *             @OA\Property(property="id", type="integer"),
-     *             @OA\Property(property="body", type="string"),
-     *             @OA\Property(property="type", type="string"),
-     *             @OA\Property(property="sender_id", type="integer"),
-     *             @OA\Property(property="is_mine", type="boolean"),
-     *             @OA\Property(property="created_at", type="string", format="date-time")
-     *         ))
+     *         description="List of messages and user status",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="other_user",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="display_name", type="string"),
+     *                 @OA\Property(property="avatar", type="string"),
+     *                 @OA\Property(property="is_online", type="boolean"),
+     *                 @OA\Property(property="last_seen_text", type="string")
+     *             ),
+     *             @OA\Property(
+     *                 property="messages",
+     *                 type="object",
+     *                 description="Paginated messages",
+     *                 @OA\Property(property="current_page", type="integer"),
+     *                 @OA\Property(property="data", type="array", @OA\Items(
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="body", type="string"),
+     *                     @OA\Property(property="type", type="string"),
+     *                     @OA\Property(property="sender_id", type="integer"),
+     *                     @OA\Property(property="is_mine", type="boolean"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time")
+     *                 ))
+     *             )
+     *         )
      *     ),
-     *     @OA\Response(response=403, description="Unauthorized")
+     *     @OA\Response(response=403, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Conversation not found")
      * )
      */
     public function show($id)
@@ -190,6 +208,21 @@ class ChatController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            // Get Other User Information
+            $otherUser = $conversation->users()->where('users.id', '!=', $user->id)->first();
+            $otherUserData = null;
+            
+            if ($otherUser) {
+                $otherUserData = [
+                    'id' => $otherUser->id,
+                    'display_name' => $otherUser->display_name ?? $otherUser->username,
+                    'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($otherUser->display_name ?? 'User'),
+                    'is_online' => $otherUser->is_online,
+                    'last_seen_text' => $otherUser->is_online ? 'Online' : 
+                        ($otherUser->last_seen_at ? $otherUser->last_seen_at->diffForHumans() : 'Offline'),
+                ];
+            }
+
             $messages = $conversation->messages()
                 ->with('sender')
                 ->orderBy('created_at', 'desc') // Latest first for UI scrolling up
@@ -202,7 +235,10 @@ class ChatController extends Controller
                 return $message;
             });
 
-            return response()->json($formattedMessages);
+            return response()->json([
+                'other_user' => $otherUserData,
+                'messages' => $formattedMessages
+            ]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Not Found', 'message' => 'Conversation not found'], 404);
         } catch (\Exception $e) {

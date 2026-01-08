@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('/messages/{id}', [\App\Http\Controllers\ChatController::class, 'deleteMessage']);
 
     // Block System
-    Route::post('/users/{id}/block', [\App\Http\Controllers\BlockUserController::class, 'store']);
-    Route::delete('/users/{id}/unblock', [\App\Http\Controllers\BlockUserController::class, 'destroy']);
+    Route::put('/users/{id}/block', [\App\Http\Controllers\BlockUserController::class, 'store']);
+    Route::put('/users/{id}/unblock', [\App\Http\Controllers\BlockUserController::class, 'destroy']);
     Route::get('/users/blocked', [\App\Http\Controllers\BlockUserController::class, 'index']);
 });

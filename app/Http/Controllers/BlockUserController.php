@@ -17,9 +17,10 @@ class BlockUserController extends Controller
     /**
      * Block a user.
      *
-     * @OA\Post(
+     * @OA\Put(
      *     path="/api/auth/users/{id}/block",
      *     summary="Block a user",
+     *     description="Block a specific user by ID to prevent them from messaging you.",
      *     tags={"Block System"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -100,9 +101,10 @@ class BlockUserController extends Controller
     /**
      * Unblock a user.
      *
-     * @OA\Delete(
+     * @OA\Put(
      *     path="/api/auth/users/{id}/unblock",
      *     summary="Unblock a user",
+     *     description="Unblock a previously blocked user by ID to allow them to message you again.",
      *     tags={"Block System"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
