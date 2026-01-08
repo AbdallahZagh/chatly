@@ -37,7 +37,18 @@ class CallController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Call initiated"
+     *         description="Call initiated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="call_id", type="string"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="receiver", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="avatar", type="string"),
+     *                 @OA\Property(property="is_online", type="boolean")
+     *             )
+     *         )
      *     ),
      *     @OA\Response(response=422, description="Validation Error"),
      *     @OA\Response(response=500, description="Server Error")
@@ -65,6 +76,8 @@ class CallController extends Controller
                 'status' => 'initiating',
             ]);
 
+            $receiver = User::find($request->receiver_id);
+
             // Broadcast Event to Receiver
             broadcast(new CallIncoming(
                 $request->receiver_id,
@@ -76,7 +89,13 @@ class CallController extends Controller
             return response()->json([
                 'status' => 'success',
                 'call_id' => $call->id,
-                'message' => 'Call initiated'
+                'message' => 'Call initiated',
+                'receiver' => [
+                    'id' => $receiver->id,
+                    'name' => $receiver->display_name ?? $receiver->name ?? $receiver->username,
+                    'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($receiver->display_name ?? $receiver->name ?? $receiver->username),
+                    'is_online' => $receiver->is_online
+                ]
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
