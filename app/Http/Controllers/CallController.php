@@ -90,7 +90,7 @@ class CallController extends Controller
      *             required={"answer"},
      *             @OA\Property(property="answer", type="object", description="SDP Answer")
      *         )
-     *     )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Call accepted"
@@ -174,7 +174,7 @@ class CallController extends Controller
      *             @OA\Property(property="candidate", type="object"),
      *             @OA\Property(property="target_user_id", type="integer")
      *         )
-     *     )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="ICE Candidate relayed"
