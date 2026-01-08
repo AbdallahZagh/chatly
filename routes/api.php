@@ -22,7 +22,7 @@ Route::group([
     Route::post('reactivate', [AuthController::class, 'reactivate'])->withoutMiddleware('auth:api'); // Allow public access since user can't login
 });
 
-Route::group(['middleware' => 'auth:api'], function () {
+Route::group(['middleware' => ['auth:api', \App\Http\Middleware\UpdateUserActivity::class]], function () {
     Route::get('/chats', [\App\Http\Controllers\ChatController::class, 'index']);
     Route::post('/chats', [\App\Http\Controllers\ChatController::class, 'store']);
     Route::get('/chats/{id}/messages', [\App\Http\Controllers\ChatController::class, 'show']);
