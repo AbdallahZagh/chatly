@@ -27,7 +27,14 @@ class CallIncoming implements ShouldBroadcast
         $this->receiverId = $receiverId;
         $this->offer = $offer;
         $this->callId = $callId;
-        $this->caller = $caller;
+        
+        // Format caller data explicitly to ensure frontend has what it needs
+        $this->caller = [
+            'id' => $caller->id,
+            'name' => $caller->display_name ?? $caller->name ?? $caller->username,
+            'username' => $caller->username,
+            'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($caller->display_name ?? $caller->name ?? $caller->username),
+        ];
     }
 
     /**
