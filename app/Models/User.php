@@ -61,7 +61,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsOnlineAttribute()
     {
-        return $this->last_seen_at && $this->last_seen_at->gt(now()->subSeconds(5));
+        return \Illuminate\Support\Facades\Cache::has('user-is-online-' . $this->id);
     }
 
     /**
